@@ -10,31 +10,37 @@ def how_many_files_in_folder(path):
     return nb_files, files
 
 
-def folders_summary(DATA_FOLDER, FOLDERS, LABELS, display_ratio=4):
+class FOLDER():
     
-    for folder in FOLDERS:
-        
-        sum_folder = 0
-        
-        for label in LABELS:
-            
-            path = DATA_FOLDER+folder+"/"+label+"/*.png"
-            nb_files, files = how_many_files_in_folder(path)
-            
-            sum_folder += nb_files
-      
-            print(folder.ljust(10), ":", label.ljust(4), ":", nb_files, ":", "*" * (nb_files // display_ratio))
+    def __init__(self, DATA_FOLDER, FOLDERS, LABELS, ):
+        self.DATA_FOLDER = DATA_FOLDER
+        self.FOLDERS = FOLDERS
+        self.LABELS = LABELS
 
-        print("Total Number of pictures in", folder, ":", sum_folder, "\n")
-    
-        if folder == "train":
-            folder_size_train = sum_folder
-        elif folder == "val":
-            folder_size_val = sum_folder
-    
-    print(f"train/val ratio: {100 * (folder_size_train) / (folder_size_train+folder_size_val):.1f} %")
+    def summary(self, display_ratio=4):
+        
+        for folder in self.FOLDERS:
 
-    return folder_size_val, folder_size_train
+            sum_folder = 0
+
+            for label in self.LABELS:
+
+                path = self.DATA_FOLDER+folder+"/"+label+"/*.png"
+                
+                nb_files = len(glob.glob(path))
+
+                sum_folder += nb_files
+
+                print(folder.ljust(10), ":", label.ljust(4), ":", nb_files, ":", "*" * (nb_files // display_ratio))
+
+            print("Total Number of pictures in", folder, ":", sum_folder, "\n")
+
+            if folder == "train":
+                folder_size_train = sum_folder
+            elif folder == "val":
+                folder_size_val = sum_folder
+
+        print(f"train/val ratio: {100 * (folder_size_train) / (folder_size_train+folder_size_val):.1f} %")
 
 
 def translate_picture(source_image, x_range, y_range):
